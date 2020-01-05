@@ -1,7 +1,8 @@
 FROM theothertomelliott/emojicode:0.8.4
 
 COPY . /app
-WORKDIR /app
+RUN mkdir -p /working
+WORKDIR /working
 
 EXPOSE 8080
 

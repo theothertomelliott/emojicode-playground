@@ -8,3 +8,6 @@ build:
 
 docker: build
 	docker build -t theothertomelliott/emojicode-playground:latest ./build -f Dockerfile
+
+compose: build
+	docker-compose up --build
