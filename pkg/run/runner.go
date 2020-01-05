@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+
+	"github.com/google/uuid"
 )
 
 func New(e BuildExec, workingDir string) *runner {
@@ -22,12 +24,17 @@ type runner struct {
 }
 
 func (r *runner) Run(ctx context.Context, code []byte, output io.Writer) error {
-	dir := r.workingDir
+	dir := filepath.Join(r.workingDir, uuid.New().String())
+	err := os.MkdirAll(dir, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	defer os.RemoveAll(dir)
 
 	sourcePath := filepath.Join(dir, "code.emojic")
 
 	// Save code to file
-	err := ioutil.WriteFile(sourcePath, code, os.ModePerm)
+	err = ioutil.WriteFile(sourcePath, code, os.ModePerm)
 	if err != nil {
 		return err
 	}
