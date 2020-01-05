@@ -1,0 +1,43 @@
+<html>
+<head>
+    <title>Emojicode Playground</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script language="javascript">
+        function run() {
+            var data = $('textarea#code').val();
+            $("#output").empty();
+            $("#output").append("<p>Waiting for output</p>"); 
+            $.ajax({
+                url: '/execute',
+                type: 'POST',
+                contentType: false,
+                data: data,
+                dataType: 'text',
+                success: function (r) {
+                    $("#output").empty();
+                    $("#output").append("<pre>" + r + "</pre>"); 
+                },
+                error: function(data,status,err) {
+                    $("#output").empty();
+                    $("#output").append("<p>Error:</p>");
+                    $("#output").append("<pre>" + data.responseText + "</pre>");
+                    console.log(data);
+                },
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Emojicode</h1>
+    <div>
+        <button id="run" onclick="javascript: run();">Run</button>
+    </div>
+    <textarea id="code" style="height: 50%; width: 97%" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false" wrap="off">🏁 🍇
+  😀🔤Hello world!🔤❗️
+  😀🔤Привет мир!🔤❗️
+  😀🔤你好，世界！🔤❗️
+🍉</textarea>
+<div id="output" style="border: 1px solid black; padding: 5px; height:30%; width: 97%">
+</div>
+</body>
+</html>

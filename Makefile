@@ -5,6 +5,7 @@ clean:
 
 build:
 	GOOS=linux GOARCH=amd64 go build -o build/emojicode-playground ./cmd/emojicode-playground
+	cp -r static ./build/static
 
 docker: build
 	docker build -t theothertomelliott/emojicode-playground:latest ./build -f Dockerfile

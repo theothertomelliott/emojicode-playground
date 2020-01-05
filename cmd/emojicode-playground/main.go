@@ -5,14 +5,20 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
+	"path"
 
 	"github.com/theothertomelliott/emojicode-playground/pkg/run"
 	"github.com/theothertomelliott/emojicode-playground/pkg/run/binaryexec"
 )
 
 func main() {
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		runner := run.New(binaryexec.New(), "./testdata")
+	workingDir := os.Args[1]
+
+	fs := http.FileServer(http.Dir("static"))
+	http.Handle("/", fs)
+	http.HandleFunc("/execute", func(w http.ResponseWriter, r *http.Request) {
+		runner := run.New(binaryexec.New(), path.Join(workingDir, "testdata"))
 
 		code, err := ioutil.ReadAll(r.Body)
 		if err != nil {
