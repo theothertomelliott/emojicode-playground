@@ -2,6 +2,8 @@
 
 A web playground for the [Emojicode language](https://www.emojicode.org/).
 
+![Screenshot of "Hello world"](screenshots/hello.png)
+
 It currently compiles version 0.8.4 of the language.
 
 ## Running
