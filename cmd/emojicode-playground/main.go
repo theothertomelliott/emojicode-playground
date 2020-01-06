@@ -32,6 +32,8 @@ func main() {
 
 		err = runner.Run(context.Background(), code, w)
 		if err != nil {
+			// TODO: Ensure this adds an appropriate status code
+			// Currently results in a "http: superfluous response.WriteHeader call" warning
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}

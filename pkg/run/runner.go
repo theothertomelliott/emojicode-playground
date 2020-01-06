@@ -48,7 +48,6 @@ func (r *runner) Run(ctx context.Context, code []byte, output io.Writer) error {
 	if err != nil {
 		return err
 	}
-	fmt.Fprint(output, string(out))
 
 	// Run
 	runCmd, err := r.buildExec.Run(sourcePath)
@@ -56,9 +55,6 @@ func (r *runner) Run(ctx context.Context, code []byte, output io.Writer) error {
 		return err
 	}
 	out, err = runCmd.CombinedOutput()
-	if err != nil {
-		return err
-	}
 	fmt.Fprint(output, string(out))
-	return nil
+	return err
 }

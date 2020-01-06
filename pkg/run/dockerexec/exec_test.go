@@ -1,6 +1,9 @@
 package dockerexec
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 func TestBuild(t *testing.T) {
 	e := &buildExec{}
@@ -13,6 +16,22 @@ func TestBuild(t *testing.T) {
 		t.Error(err)
 	}
 	t.Log(string(out))
+}
+
+func TestBuildFailure(t *testing.T) {
+	e := &buildExec{}
+	buildCmd, err := e.Build("testdata/hellobadsyntax/hello.emojic")
+	if err != nil {
+		t.Fatal(err)
+	}
+	out, err := buildCmd.CombinedOutput()
+	if err == nil {
+		t.Error("expected an error")
+	}
+	// Expect that the output includes the bad line
+	if !strings.Contains(string(out), "testdata/hellobadsyntax/hello.emojic:3:1") {
+		t.Errorf("Output not as expected: %q", string(out))
+	}
 }
 
 func TestBuildAndRun(t *testing.T) {

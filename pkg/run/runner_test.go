@@ -2,9 +2,9 @@ package run_test
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 	"testing"
 
 	"github.com/theothertomelliott/emojicode-playground/pkg/run"
@@ -26,7 +26,6 @@ func TestRunHello(t *testing.T) {
 	if err != nil {
 		t.Errorf("could not read data: %v", err)
 	}
-	fmt.Printf("Data: %s\n", string(data))
 	pipeR.Close()
 
 	if string(data) != `Hello world!
@@ -37,10 +36,37 @@ func TestRunHello(t *testing.T) {
 	}
 }
 
-const helloCode = `
-🏁 🍇
+func TestBuildFailure(t *testing.T) {
+	r := run.New(dockerexec.New(), "./testdata")
+
+	pipeR, pipeW, _ := os.Pipe()
+
+	err := r.Run(context.Background(), []byte(helloBadSyntax), pipeW)
+	if err == nil {
+		t.Errorf("expected an error from running code")
+	}
+	pipeW.Close()
+
+	data, err := ioutil.ReadAll(pipeR)
+	if err != nil {
+		t.Errorf("could not read data: %v", err)
+	}
+	pipeR.Close()
+
+	// Expect that the output includes the problem line
+	if !strings.Contains(string(data), "code.emojic:3:1") {
+		t.Errorf("Output not as expected:\n%s", string(data))
+	}
+}
+
+const helloCode = `🏁 🍇
   😀🔤Hello world!🔤❗️
   😀🔤Привет мир!🔤❗️
   😀🔤你好，世界！🔤❗️
+🍉
+`
+
+const helloBadSyntax = `🏁 🍇
+  😀🔤Hello world!🔤
 🍉
 `
