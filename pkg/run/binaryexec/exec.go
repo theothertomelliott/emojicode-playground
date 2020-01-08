@@ -36,5 +36,8 @@ func (e *buildExec) Run(ctx context.Context, sourcePath string) (*exec.Cmd, erro
 		return nil, err
 	}
 
-	return exec.CommandContext(ctx, binaryPath), nil
+	return exec.CommandContext(ctx,
+		"nice",
+		binaryPath,
+	), nil
 }

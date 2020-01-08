@@ -54,6 +54,7 @@ func (e *buildExec) Run(ctx context.Context, sourcePath string) (*exec.Cmd, erro
 	}
 
 	return exec.CommandContext(ctx,
+		"nice",
 		"docker",
 		"run",
 		"--rm",
