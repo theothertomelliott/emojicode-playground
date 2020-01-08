@@ -60,6 +60,29 @@ func TestBuildFailure(t *testing.T) {
 	}
 }
 
+func TestRunTimeout(t *testing.T) {
+	r := run.New(dockerexec.New(), "./testdata", 5*time.Second)
+
+	pipeR, pipeW, _ := os.Pipe()
+
+	err := r.Run(context.Background(), []byte(infiniteLoop), pipeW)
+	if err == nil {
+		t.Errorf("expected an error from running code")
+	}
+	pipeW.Close()
+
+	data, err := ioutil.ReadAll(pipeR)
+	if err != nil {
+		t.Errorf("could not read data: %v", err)
+	}
+	pipeR.Close()
+
+	// Expect that the output includes the problem line
+	if len(string(data)) > 0 {
+		t.Errorf("Expected no output, got:\n%s", string(data))
+	}
+}
+
 const helloCode = `🏁 🍇
   😀🔤Hello world!🔤❗️
   😀🔤Привет мир!🔤❗️
@@ -71,3 +94,9 @@ const helloBadSyntax = `🏁 🍇
   😀🔤Hello world!🔤
 🍉
 `
+
+const infiniteLoop = `🏁 🍇
+  🔁 👍 🍇
+    😀 🔤It goes on and on and on🔤❗️
+  🍉
+🍉`

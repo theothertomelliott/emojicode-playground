@@ -26,18 +26,13 @@ type runner struct {
 	timeout    time.Duration
 }
 
-func (r *runner) Run(ctx context.Context, code []byte, output io.Writer) (err error) {
+func (r *runner) Run(ctx context.Context, code []byte, output io.Writer) error {
+	fmt.Printf("Setting timeout: %v\n", r.timeout)
 	ctx, cancel := context.WithTimeout(ctx, r.timeout)
-	defer func() {
-		if ctx.Err() != nil {
-			err = ctx.Err()
-			return
-		}
-		cancel()
-	}()
+	defer cancel()
 
 	dir := filepath.Join(r.workingDir, uuid.New().String())
-	err = os.MkdirAll(dir, os.ModePerm)
+	err := os.MkdirAll(dir, os.ModePerm)
 	if err != nil {
 		return err
 	}
@@ -56,18 +51,34 @@ func (r *runner) Run(ctx context.Context, code []byte, output io.Writer) (err er
 	if err != nil {
 		return err
 	}
+	// TODO: Limit the total amount of output that can be received
 	out, err := buildCmd.CombinedOutput()
+
+	// Never return output if the program timed out
+	// Attempting to print this can result in locking up
+	if ctx.Err() != nil {
+		return ctx.Err()
+	}
 	fmt.Fprint(output, string(out))
 	if err != nil {
 		return err
 	}
+	fmt.Println("Built code")
 
 	// Run
 	runCmd, err := r.buildExec.Run(ctx, sourcePath)
 	if err != nil {
 		return err
 	}
+	// TODO: Limit the total amount of output that can be received
 	out, err = runCmd.CombinedOutput()
+
+	// Never return output if the program timed out
+	// Attempting to print this can result in locking up
+	if ctx.Err() != nil {
+		return ctx.Err()
+	}
 	fmt.Fprint(output, string(out))
+	fmt.Println("Program exited")
 	return err
 }

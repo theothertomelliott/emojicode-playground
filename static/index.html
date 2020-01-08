@@ -4,6 +4,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script language="javascript">
         function run() {
+            console.log("Sending execution request");
             var data = $('textarea#code').val();
             $("#output").empty();
             $("#output").append("<p>Waiting for output</p>"); 
@@ -14,10 +15,12 @@
                 data: data,
                 dataType: 'text',
                 success: function (r) {
+                    console.log("Execution completed successfully");
                     $("#output").empty();
                     $("#output").append("<pre>" + r + "</pre>"); 
                 },
                 error: function(data,status,err) {
+                    console.log("Execution failed");
                     $("#output").empty();
                     $("#output").append("<p>Error:</p>");
                     $("#output").append("<pre>" + data.responseText + "</pre>");

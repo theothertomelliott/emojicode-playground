@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -19,10 +20,16 @@ func main() {
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/", fs)
 	http.HandleFunc("/execute", func(w http.ResponseWriter, r *http.Request) {
-		runner := run.New(binaryexec.New(), path.Join(workingDir, "testdata"), 5*time.Second)
+		start := time.Now()
+		defer func() {
+			fmt.Printf("Request completed in %v\n", time.Since(start))
+		}()
+
+		runner := run.New(binaryexec.New(), path.Join(workingDir, "testdata"), 2*time.Second)
 
 		code, err := ioutil.ReadAll(r.Body)
 		if err != nil {
+			fmt.Printf("Returning error: %v", err)
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -33,6 +40,7 @@ func main() {
 
 		err = runner.Run(context.Background(), code, w)
 		if err != nil {
+			fmt.Printf("Returning error: %v", err)
 			// TODO: Ensure this adds an appropriate status code
 			// Currently results in a "http: superfluous response.WriteHeader call" warning
 			http.Error(w, err.Error(), http.StatusInternalServerError)

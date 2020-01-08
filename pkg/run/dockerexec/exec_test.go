@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 	"testing"
+	"time"
 )
 
 func TestBuild(t *testing.T) {
@@ -32,6 +33,37 @@ func TestBuildFailure(t *testing.T) {
 	// Expect that the output includes the bad line
 	if !strings.Contains(string(out), "testdata/hellobadsyntax/hello.emojic:3:1") {
 		t.Errorf("Output not as expected: %q", string(out))
+	}
+}
+
+func TestExecTimeout(t *testing.T) {
+	if testing.Short() {
+		t.Skip()
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	e := &buildExec{}
+	buildCmd, err := e.Build(ctx, "testdata/loop/main.emojic")
+	if err != nil {
+		t.Fatal(err)
+	}
+	out, err := buildCmd.CombinedOutput()
+	if err != nil {
+		t.Errorf("building failed: %v", err)
+	}
+	t.Log(string(out))
+	runCmd, err := e.Run(ctx, "testdata/loop/main.emojic")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got, err := runCmd.CombinedOutput()
+	if err == nil {
+		t.Error("expected an error")
+	}
+	if string(got) != "" {
+		t.Errorf("Expected no output, got: %q", string(got))
 	}
 }
 

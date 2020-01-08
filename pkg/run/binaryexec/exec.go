@@ -19,6 +19,7 @@ type buildExec struct {
 
 func (e *buildExec) Build(ctx context.Context, sourcePath string) (*exec.Cmd, error) {
 	return exec.CommandContext(ctx,
+		"nice",
 		"emojicodec",
 		sourcePath,
 	), nil
