@@ -1,13 +1,14 @@
 package dockerexec
 
 import (
+	"context"
 	"strings"
 	"testing"
 )
 
 func TestBuild(t *testing.T) {
 	e := &buildExec{}
-	buildCmd, err := e.Build("testdata/hello/hello.emojic")
+	buildCmd, err := e.Build(context.Background(), "testdata/hello/hello.emojic")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -20,7 +21,7 @@ func TestBuild(t *testing.T) {
 
 func TestBuildFailure(t *testing.T) {
 	e := &buildExec{}
-	buildCmd, err := e.Build("testdata/hellobadsyntax/hello.emojic")
+	buildCmd, err := e.Build(context.Background(), "testdata/hellobadsyntax/hello.emojic")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -36,7 +37,7 @@ func TestBuildFailure(t *testing.T) {
 
 func TestBuildAndRun(t *testing.T) {
 	e := &buildExec{}
-	buildCmd, err := e.Build("testdata/hello/hello.emojic")
+	buildCmd, err := e.Build(context.Background(), "testdata/hello/hello.emojic")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +46,7 @@ func TestBuildAndRun(t *testing.T) {
 		t.Error(err)
 	}
 	t.Log(string(out))
-	runCmd, err := e.Run("testdata/hello/hello.emojic")
+	runCmd, err := e.Run(context.Background(), "testdata/hello/hello.emojic")
 	if err != nil {
 		t.Fatal(err)
 	}

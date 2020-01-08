@@ -6,13 +6,14 @@ import (
 	"os"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/theothertomelliott/emojicode-playground/pkg/run"
 	"github.com/theothertomelliott/emojicode-playground/pkg/run/dockerexec"
 )
 
 func TestRunHello(t *testing.T) {
-	r := run.New(dockerexec.New(), "./testdata")
+	r := run.New(dockerexec.New(), "./testdata", 10*time.Second)
 
 	pipeR, pipeW, _ := os.Pipe()
 
@@ -37,7 +38,7 @@ func TestRunHello(t *testing.T) {
 }
 
 func TestBuildFailure(t *testing.T) {
-	r := run.New(dockerexec.New(), "./testdata")
+	r := run.New(dockerexec.New(), "./testdata", 10*time.Second)
 
 	pipeR, pipeW, _ := os.Pipe()
 

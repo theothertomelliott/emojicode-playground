@@ -1,6 +1,7 @@
 package binaryexec
 
 import (
+	"context"
 	"os/exec"
 	"path/filepath"
 
@@ -16,8 +17,9 @@ func New() run.BuildExec {
 type buildExec struct {
 }
 
-func (e *buildExec) Build(sourcePath string) (*exec.Cmd, error) {
-	return exec.Command("emojicodec",
+func (e *buildExec) Build(ctx context.Context, sourcePath string) (*exec.Cmd, error) {
+	return exec.CommandContext(ctx,
+		"emojicodec",
 		sourcePath,
 	), nil
 }
@@ -28,11 +30,11 @@ func (e *buildExec) binaryForSource(sourcePath string) (string, error) {
 	return path, nil
 }
 
-func (e *buildExec) Run(sourcePath string) (*exec.Cmd, error) {
+func (e *buildExec) Run(ctx context.Context, sourcePath string) (*exec.Cmd, error) {
 	binaryPath, err := e.binaryForSource(sourcePath)
 	if err != nil {
 		return nil, err
 	}
 
-	return exec.Command(binaryPath), nil
+	return exec.CommandContext(ctx, binaryPath), nil
 }

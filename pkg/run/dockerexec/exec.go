@@ -1,6 +1,7 @@
 package dockerexec
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -18,12 +19,13 @@ func New() run.BuildExec {
 type buildExec struct {
 }
 
-func (e *buildExec) Build(sourcePath string) (*exec.Cmd, error) {
+func (e *buildExec) Build(ctx context.Context, sourcePath string) (*exec.Cmd, error) {
 	wd, err := os.Getwd()
 	if err != nil {
 		return nil, err
 	}
-	return exec.Command("docker",
+	return exec.CommandContext(ctx,
+		"docker",
 		"run",
 		"--rm",
 		"--volume", fmt.Sprintf("%s:/working", wd),
@@ -40,7 +42,7 @@ func (e *buildExec) binaryForSource(sourcePath string) (string, error) {
 	return path, nil
 }
 
-func (e *buildExec) Run(sourcePath string) (*exec.Cmd, error) {
+func (e *buildExec) Run(ctx context.Context, sourcePath string) (*exec.Cmd, error) {
 	wd, err := os.Getwd()
 	if err != nil {
 		return nil, err
@@ -51,7 +53,8 @@ func (e *buildExec) Run(sourcePath string) (*exec.Cmd, error) {
 		return nil, err
 	}
 
-	return exec.Command("docker",
+	return exec.CommandContext(ctx,
+		"docker",
 		"run",
 		"--rm",
 		"--volume", fmt.Sprintf("%s:/working", wd),

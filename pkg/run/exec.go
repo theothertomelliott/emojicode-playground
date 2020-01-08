@@ -1,8 +1,11 @@
 package run
 
-import "os/exec"
+import (
+	"context"
+	"os/exec"
+)
 
 type BuildExec interface {
-	Build(sourcePath string) (*exec.Cmd, error)
-	Run(sourcePath string) (*exec.Cmd, error)
+	Build(ctx context.Context, sourcePath string) (*exec.Cmd, error)
+	Run(ctx context.Context, sourcePath string) (*exec.Cmd, error)
 }

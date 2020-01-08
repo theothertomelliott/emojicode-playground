@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"time"
 
 	"github.com/theothertomelliott/emojicode-playground/pkg/run"
 	"github.com/theothertomelliott/emojicode-playground/pkg/run/binaryexec"
@@ -18,7 +19,7 @@ func main() {
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/", fs)
 	http.HandleFunc("/execute", func(w http.ResponseWriter, r *http.Request) {
-		runner := run.New(binaryexec.New(), path.Join(workingDir, "testdata"))
+		runner := run.New(binaryexec.New(), path.Join(workingDir, "testdata"), 5*time.Second)
 
 		code, err := ioutil.ReadAll(r.Body)
 		if err != nil {
