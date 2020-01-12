@@ -1,7 +1,7 @@
 .PHONY: clean build docker
 
 REPOSITORY=theothertomelliott
-VERSION=0.1.1
+VERSION=0.1.2
 
 clean:
 	rm -rf build

@@ -1,50 +1,103 @@
 <html>
 <head>
     <title>Emojicode Playground</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script language="javascript">
-        function run() {
-            console.log("Sending execution request");
-            var data = $('textarea#code').val();
-            $("#output").empty();
-            $("#output").append("<p>Waiting for output</p>"); 
-            $.ajax({
-                url: '/execute',
-                type: 'POST',
-                contentType: false,
-                data: data,
-                dataType: 'text',
-                success: function (r) {
-                    console.log("Execution completed successfully");
-                    $("#output").empty();
-                    $("#output").append("<pre>" + r + "</pre>"); 
-                },
-                error: function(data,status,err) {
-                    console.log("Execution failed");
-                    $("#output").empty();
-                    $("#output").append("<p>Error:</p>");
-                    $("#output").append("<pre>" + data.responseText + "</pre>");
-                    console.log(data);
-                },
-            });
+    <style>
+        .error {
+            color: red;
+            font-weight: bold;
         }
-    </script>
+
+        .code {
+            font-family: Roboto Mono,Monaco,monospace;
+            background-color: #f9f9fb;
+        }
+        
+        pre {
+            font-family: Roboto Mono,Monaco,monospace;
+        }
+    </style>
 </head>
 <body>
     <a class="github-fork-ribbon" href="http://github.com/theothertomelliott/emojicode-playground" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
-    <h1>Emojicode</h1>
-    <p>Want to try out <a href="https://www.emojicode.org/" target="_blank">Emojicode</a> without installing? Enter your code in the box below and hit "Run"!</p>
-    <div>
-        <button id="run" onclick="javascript: run();">Run</button>
-    </div>
-    <br/>
-    <textarea id="code" style="height: 50%; width: 97%" autocorrect="off" autocomplete="off" autocapitalize="off" spellcheck="false" wrap="off">🏁 🍇
-  😀🔤Hello world!🔤❗️
-  😀🔤Привет мир!🔤❗️
-  😀🔤你好，世界！🔤❗️
+
+    <div class="container-fluid">
+        <h1>Emojicode</h1>
+        <div class="row">
+            <div class="col col-md-12">
+                <p>Want to try out <a href="https://www.emojicode.org/" target="_blank">Emojicode</a> without installing? Enter your code in the box below and hit "Run"!</p>
+                <div>
+                    <button id="run" class="btn btn-primary" onclick="javascript: run();">Run</button>
+                </div>
+            </div>
+        </div>
+        <div class="my-3"></div>
+        <div class="row" style="height: 50%;">
+            <div class="col col-md-12">
+                <textarea 
+                    class="code"
+                    id="code" 
+                    style="height: 100%; width:97%;" 
+                    autocorrect="off" 
+                    autocomplete="off" 
+                    autocapitalize="off" 
+                    spellcheck="false" 
+                    wrap="off"
+                >🏁 🍇
+    😀🔤Hello world!🔤❗️
+    😀🔤Привет мир!🔤❗️
+    😀🔤你好，世界！🔤❗️
 🍉</textarea>
-<div id="output" style="border: 1px solid black; padding: 5px; height:30%; width: 97%">
-</div>
+            </div>
+        </div>
+        <div class="my-3"></div>
+        <div 
+            class="row"
+            style="height:25%;"
+        >
+            <div 
+                class="col col-md-12"
+            >
+            <div
+                id="output"
+                class="output"
+                style="border: 1px solid black; padding: 5px; height: 100%; width:97%; overflow: scroll; font-family: Menlo, monospace; font-size: 11pt;"
+            ></div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script language="javascript">
+    function run() {
+        console.log("Sending execution request");
+        var data = $('textarea#code').val();
+        $("#output").empty();
+        $("#output").append("<p>Waiting for output</p>"); 
+        $.ajax({
+            url: '/execute',
+            type: 'POST',
+            contentType: false,
+            data: data,
+            dataType: 'text',
+            success: function (r) {
+                console.log("Execution completed successfully");
+                $("#output").empty();
+                $("#output").append("<pre>" + r + "</pre>"); 
+            },
+            error: function(data,status,err) {
+                console.log("Execution failed");
+                $("#output").empty();
+                $("#output").append("<p class='error'>Error:</p>");
+                $("#output").append("<pre>" + data.responseText + "</pre>");
+                console.log(data);
+            },
+        });
+    }
+</script>
+
 </body>
 </html>
