@@ -6,6 +6,8 @@ A web playground for the [Emojicode language](https://www.emojicode.org/).
 
 It currently compiles version 0.8.4 of the language.
 
+You can try out a live example at [https://emojicode.telliott.io](https://emojicode.telliott.io).
+
 ## Running
 
 You can run the Emojicode Playground locally with Docker Compose.

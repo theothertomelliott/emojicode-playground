@@ -1,12 +1,12 @@
 .PHONY: clean build docker
 
 REPOSITORY=theothertomelliott
-VERSION=0.1
+VERSION=0.1.1
 
 clean:
 	rm -rf build
 
-build:
+build: clean
 	GOOS=linux GOARCH=amd64 go build -o build/emojicode-playground ./cmd/emojicode-playground
 	cp -r static ./build/static
 
